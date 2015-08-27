@@ -1,17 +1,21 @@
 # avro-evo-check
-A tool to verify the compatibility of Avro-schema.
+__Avro-evo-check__ is a tool to verify the compatibility of Avro-schema.
 
-You type in:
+Simply test, if three Avro schema files are write-read compatible each other.
 
+> __aec.sh__ ascvFile1 ascvFile2 ascvFile3
+
+Example:
+> __aec.sh__ src evo1 evo2
 
 The tool tells you this:
 
- Identity     : COMPATIBLE
+> Identity (src) : COMPATIBLE
 
- src  -> evo1 : INCOMPATIBLE
+> src  -> evo1 : INCOMPATIBLE
 
- evo1 -> src  : COMPATIBLE
+> evo1 -> src  : COMPATIBLE
 
- src  -> evo2 : INCOMPATIBLE
+> src  -> evo2 : INCOMPATIBLE
 
- evo2 -> src  : INCOMPATIBLE
+> evo2 -> src  : INCOMPATIBLE
