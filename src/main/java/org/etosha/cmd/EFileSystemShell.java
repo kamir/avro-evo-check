@@ -35,44 +35,77 @@ import org.apache.commons.cli.ParseException;
 public class EFileSystemShell {
 
     public static void main(String[] args) throws IOException, ParseException {
+        
+        boolean inputCorrect = true;
+        
+        System.out.println( "args  : " + args.length );
+        
+        File f1 = new File("resources/SrcTest.avsc");
+        File f2 = new File("resources/DestTestOK.avsc");
+        File f3 = new File("resources/DestTestFail.avsc");
 
+        try {
+            
+            String s1 = args[0];
+        
+            String s2 = args[1];
+       
+            String s3 = args[2];
+            
+            f1 = new File(s1);
+            f2 = new File(s2);
+            f3 = new File(s3);
+            
+            System.out.println( "arg0  : " + f1.getAbsolutePath() + " # " + f1.exists() );
+            System.out.println( "arg1  : " + f2.getAbsolutePath() + " # " + f2.exists() );
+            System.out.println( "arg2  : " + f3.getAbsolutePath() + " # " + f3.exists() );
+            
+        }
+        catch(Exception e){ 
+            inputCorrect = false;
+            f1 = new File("resources/SrcTest.avsc");
+            f2 = new File("resources/DestTestOK.avsc");
+            f3 = new File("resources/DestTestFail.avsc");
+        }
+        
         // create Options object
         Options options = new Options();
         
         // create a schema
-        Schema schemaSRC = new Schema.Parser().parse(new File("resources/SrcTest.avsc"));
-        Schema schemaDESTok = new Schema.Parser().parse(new File("resources/DestTestOK.avsc"));
-        Schema schemaDESTfail = new Schema.Parser().parse(new File("resources/DestTestFail.avsc"));
+        Schema schemaSRC = new Schema.Parser().parse( f1 );
+        Schema schemaDESTok = new Schema.Parser().parse( f2 );
+        Schema schemaDESTfail = new Schema.Parser().parse( f3 );
 
         System.out.println( "[Namespace of test schema]" );
         
-        System.out.println( "schemaSRC      : " + schemaSRC.getNamespace() );
-        System.out.println( "schemaDESTok   : " + schemaDESTok.getNamespace() );
-        System.out.println( "schemaDESTfail : " + schemaDESTfail.getNamespace() );
+        System.out.println( "src   : " + f1.getAbsolutePath() + " # " + schemaSRC.getNamespace() );
+        System.out.println( "evo1  : " + f2.getAbsolutePath() + " # " +schemaDESTok.getNamespace() );
+        System.out.println( "evo2  : " + f3.getAbsolutePath() + " # " +schemaDESTfail.getNamespace() );
                 
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse( options, args);
-        
-        System.out.println( "[CMD usage hints...]" );
-        
-        // add t option
-        options.addOption("put", false, "Let's put a new file into a cluster, but only if the schema matches.");
-        
-        HelpFormatter hf=new HelpFormatter();
-  
-        hf.printHelp("efs-tool ",options,true);
 
-        System.out.println( "Identity     : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaSRC, schemaSRC) ) );
+        System.out.println( "identity (src)  : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaSRC, schemaSRC) ) );
         System.out.println();
-        System.out.println( "src  -> evo1 : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaSRC, schemaDESTok)  )  );
+        System.out.println( "src  -> evo1    : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaSRC, schemaDESTok)  )  );
         System.out.println();
-        System.out.println( "evo1 -> src  : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaDESTok, schemaSRC)  ));
+        System.out.println( "evo1 -> src     : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaDESTok, schemaSRC)  ));
         System.out.println();
         
-        System.out.println( "src  -> evo2 : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaSRC, schemaDESTfail) ) );
+        System.out.println( "src  -> evo2    : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaSRC, schemaDESTfail) ) );
         System.out.println();
-        System.out.println( "evo2 -> src  : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaDESTfail, schemaSRC) ) );
+        System.out.println( "evo2 -> src     : " + check( SchemaCompatibility.checkReaderWriterCompatibility(schemaDESTfail, schemaSRC) ) );
         System.out.println();
+        
+//        System.out.println( "[CMD usage hints...]" );
+//        
+//        // add t option
+//        options.addOption("put", false, "Let's put a new file into a cluster, but only if the schema matches.");
+//        
+//        HelpFormatter hf=new HelpFormatter();
+//  
+//        hf.printHelp("efs-tool ",options,true);
+
         
     }
 
